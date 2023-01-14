@@ -8,8 +8,6 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var $Set = require('es-set/polyfill')();
 
-var isNativeSet = typeof Set === 'function' && $Set === Set;
-
 var IteratorStep = require('es-abstract/2022/IteratorStep');
 var IteratorValue = require('es-abstract/2022/IteratorValue');
 
@@ -19,13 +17,57 @@ var GetKeysIterator = require('./aos/GetKeysIterator');
 
 var isSet = require('is-set');
 
-var callBind = isNativeSet || require('call-bind'); // eslint-disable-line global-require
-var callBound = isNativeSet && require('call-bind/callBound'); // eslint-disable-line global-require
+var callBind = require('call-bind');
+var callBound = require('call-bind/callBound');
+var iterate = require('iterate-value');
 
-var $setAdd = isNativeSet ? callBound('Set.prototype.add') : callBind($Set.prototype.add);
-var $setDelete = isNativeSet ? callBound('Set.prototype.delete') : callBind($Set.prototype['delete']);
-var $setForEach = isNativeSet ? callBound('Set.prototype.forEach') : callBind($Set.prototype.forEach);
-var $setHas = isNativeSet ? callBound('Set.prototype.has') : callBind($Set.prototype.has);
+var $nativeSetForEach = callBound('Set.prototype.forEach', true);
+var $polyfillSetForEach = $Set.prototype.forEach && callBind($Set.prototype.forEach);
+var $setForEach = function (set, callback) {
+	if ($nativeSetForEach) {
+		try {
+			return $nativeSetForEach(set, callback);
+		} catch (e) { /**/ }
+	}
+	if ($polyfillSetForEach) {
+		return $polyfillSetForEach(set, callback);
+	}
+	iterate(set, callback);
+	return void undefined;
+};
+
+var $nativeSetDelete = callBound('Set.prototype.delete', true);
+var $polyfillSetDelete = $Set.prototype['delete'] && callBind($Set.prototype['delete']);
+var $setDelete = function (set, key) {
+	if ($nativeSetDelete) {
+		try {
+			return $nativeSetDelete(set, key);
+		} catch (e) { /**/ }
+	}
+	return $polyfillSetDelete(set, key);
+};
+
+var $nativeSetHas = callBound('Set.prototype.has', true);
+var $polyfillSetHas = $Set.prototype.has && callBind($Set.prototype.has);
+var $setHas = function (set, key) {
+	if ($nativeSetHas) {
+		try {
+			return $nativeSetHas(set, key);
+		} catch (e) { /**/ }
+	}
+	return $polyfillSetHas(set, key);
+};
+
+var $nativeSetAdd = callBound('Set.prototype.add', true);
+var $polyfillSetAdd = $Set.prototype.add && callBind($Set.prototype.add);
+var $setAdd = function (S, v) {
+	if ($nativeSetAdd) {
+		try {
+			return $nativeSetAdd(S, v);
+		} catch (e) { /**/ }
+	}
+	return $polyfillSetAdd(S, v);
+};
 
 module.exports = function symmetricDifference(other) {
 	var O = this; // step 1
