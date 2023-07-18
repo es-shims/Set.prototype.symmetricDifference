@@ -8,8 +8,8 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var $Set = require('es-set/polyfill')();
 
+var GetIteratorFromMethod = require('es-abstract/2023/GetIteratorFromMethod');
 var GetSetRecord = require('./aos/GetSetRecord');
-var GetKeysIterator = require('./aos/GetKeysIterator');
 var IteratorStep = require('es-abstract/2023/IteratorStep');
 var IteratorValue = require('es-abstract/2023/IteratorValue');
 // var SetDataHas = require('./aos/SetDataHas');
@@ -32,7 +32,7 @@ module.exports = function symmetricDifference(other) {
 
 	var otherRec = GetSetRecord(other); // step 3
 
-	var keysIter = GetKeysIterator(otherRec); // step 4
+	var keysIter = GetIteratorFromMethod(otherRec['[[Set]]'], otherRec['[[Keys]]']); // step 4
 
 	var result = new $Set();
 	$setForEach(O, function (value) {
@@ -41,7 +41,7 @@ module.exports = function symmetricDifference(other) {
 
 	var next = true; // step 6
 	while (next) { // step 7
-		next = IteratorStep(keysIter['[[Iterator]]']); // step 7.a
+		next = IteratorStep(keysIter); // step 7.a
 		if (next) { // step 7.b
 			var nextValue = IteratorValue(next); // step 7.b.i
 			if (nextValue === 0) { // step 7.b.ii
