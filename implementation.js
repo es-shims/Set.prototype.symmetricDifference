@@ -8,11 +8,10 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var $Set = require('es-set/polyfill')();
 
-var IteratorStep = require('es-abstract/2022/IteratorStep');
-var IteratorValue = require('es-abstract/2022/IteratorValue');
-
 var GetSetRecord = require('./aos/GetSetRecord');
 var GetKeysIterator = require('./aos/GetKeysIterator');
+var IteratorStep = require('es-abstract/2023/IteratorStep');
+var IteratorValue = require('es-abstract/2023/IteratorValue');
 // var SetDataHas = require('./aos/SetDataHas');
 
 var isSet = require('is-set');
