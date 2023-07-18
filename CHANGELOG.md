@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.0](https://github.com/es-shims/Set.prototype.symmetricDifference/compare/v1.0.2...v1.1.0) - 2023-07-18
+
+### Commits
+
+- [patch] remove GetKeysIterator and its callable check [`78b47cd`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/78b47cd6f6d992278cc3819550b42ac354c7bb31)
+- [Deps] update `define-properties`, `es-abstrct`, `get-intrinsic` [`c95890c`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/c95890ced7be619318aff62efce8c84373104382)
+- [Tests] remove unused shimmed tests [`7dbe568`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/7dbe56828e8c313adb14945e26331b221d99bbc6)
+- [patch] throw on negative set sizes [`a7c2506`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/a7c250629a915abc1e2687735664a9817ed3a471)
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `aud`, `es6-shim`, `tape` [`b71ef6e`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/b71ef6ee583de4c569402736644c1f2aeecd71c7)
+
 ## [v1.0.2](https://github.com/es-shims/Set.prototype.symmetricDifference/compare/v1.0.1...v1.0.2) - 2023-01-14
 
 ### Commits
