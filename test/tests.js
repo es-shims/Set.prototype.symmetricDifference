@@ -4,6 +4,8 @@ var $Set = require('es-set/polyfill')();
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
+var $Map = require('es-map/polyfill')();
+var getIterator = require('es-get-iterator');
 
 var setEqual = function compareSetLikes(t, actual, expected, msg) {
 	t.test('setlikes: ' + msg, function (st) {
@@ -29,7 +31,7 @@ var setEqual = function compareSetLikes(t, actual, expected, msg) {
 
 module.exports = function (symmetricDifference, t) {
 	t.test('throws on non-set receivers', function (st) {
-		forEach(v.primitives.concat(v.objects), function (nonSet) {
+		forEach(v.primitives.concat(v.objects, [], new $Map()), function (nonSet) {
 			st['throws'](
 				function () { symmetricDifference(nonSet, {}); },
 				TypeError,
@@ -196,6 +198,306 @@ module.exports = function (symmetricDifference, t) {
 			new $Set([0, 1, 3, 5, 8]),
 			'returns the symmetricDifference of the two sets with a manual iterator'
 		);
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/add-not-called', function (st) {
+		var s1 = new $Set([1, 2]);
+		var s2 = new $Set([2, 3]);
+		var expected = new $Set([1, 3]);
+
+		var getCalls = st.capture($Set.prototype, 'add');
+
+		var combined = symmetricDifference(s1, s2);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+		st.deepEqual(getCalls(), [], 'Add is never called');
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/allows-set-like-object', function (st) {
+		var s1 = new $Set([1, 2]);
+		var s2 = {
+			size: 2,
+			has: function () {
+				throw new EvalError('Set.prototype.symmetricDifference should not invoke .has on its argument');
+			},
+			keys: function () {
+				return getIterator([2, 3]);
+			}
+		};
+		var expected = new $Set([1, 3]);
+		var combined = symmetricDifference(s1, s2);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/combines-Map', function (st) {
+		var s1 = new $Set([1, 2]);
+		var m1 = new $Map([
+			[2, 'two'],
+			[3, 'three']
+		]);
+		var expected = new $Set([1, 3]);
+		var combined = symmetricDifference(s1, m1);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/combines-empty-sets', function (st) {
+		var s1 = new $Set([]);
+		var s2 = new $Set([1, 2]);
+		var expected = new $Set([1, 2]);
+		var combined = symmetricDifference(s1, s2);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+
+		var s3 = new $Set([1, 2]);
+		var s4 = new $Set([]);
+		expected = new $Set([1, 2]);
+		combined = symmetricDifference(s3, s4);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+
+		var s5 = new $Set([]);
+		var s6 = new $Set([]);
+		expected = new $Set([]);
+		combined = symmetricDifference(s5, s6);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/combines-itself', function (st) {
+		var s1 = new $Set([1, 2]);
+		var expected = new $Set([]);
+		var combined = symmetricDifference(s1, s1);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+		st.notEqual(combined, s1, 'The returned object is a new object');
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/combines-same-sets', function (st) {
+		var s1 = new $Set([1, 2]);
+		var s2 = new $Set([1, 2]);
+		var expected = new $Set([]);
+		var combined = symmetricDifference(s1, s2);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+		st.notEqual(combined, s1, 'The returned object is a new object');
+		st.notEqual(combined, s2, 'The returned object is a new object');
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/combines-sets', function (st) {
+		var s1 = new $Set([1, 2]);
+		var s2 = new $Set([2, 3]);
+		var expected = new $Set([1, 3]);
+		var combined = symmetricDifference(s1, s2);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/converts-negative-zero', function (st) {
+		var setlikeWithMinusZero = {
+			size: 1,
+			has: function () {
+				throw new EvalError('Set.prototype.symmetricDifference should not invoke .has on its argument when this.size > arg.size');
+			},
+			keys: function () {
+				return getIterator([-0]);
+			}
+		};
+
+		var s1 = new $Set([1, 2]);
+		var expected = new $Set([1, 2, +0]);
+		var combined = symmetricDifference(s1, setlikeWithMinusZero);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/has-is-callable', function (st) {
+		var s1 = new $Set([1, 2]);
+		var s2 = {
+			size: 2,
+			has: undefined,
+			keys: function () {
+				return getIterator([2, 3]);
+			}
+		};
+		st['throws'](
+			function () { symmetricDifference(s1, s2); },
+			TypeError,
+			'GetSetRecord throws an error when has is undefined'
+		);
+
+		s2.has = {};
+		st['throws'](
+			function () { symmetricDifference(s1, s2); },
+			TypeError,
+			'GetSetRecord throws an error when has is not callable'
+		);
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/keys-is-callable', function (st) {
+		var s1 = new $Set([1, 2]);
+		var s2 = {
+			size: 2,
+			has: function () {},
+			keys: undefined
+		};
+		st['throws'](
+			function () { symmetricDifference(s1, s2); },
+			TypeError,
+			'GetSetRecord throws an error when keys is undefined'
+		);
+
+		s2.keys = {};
+		st['throws'](
+			function () { symmetricDifference(s1, s2); },
+			TypeError,
+			'GetSetRecord throws an error when keys is not callable'
+		);
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/result-order', function (st) {
+		var s1 = new $Set([1, 2, 3, 4]);
+		var s2 = new $Set([6, 5, 4, 3]);
+
+		st.deepEqual(symmetricDifference(s1, s2), new $Set([1, 2, 6, 5]));
+
+		var s3 = new $Set([6, 5, 4, 3]);
+		var s4 = new $Set([1, 2, 3, 4]);
+
+		st.deepEqual(symmetricDifference(s3, s4), new $Set([6, 5, 1, 2]));
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/set-like-array', function (st) {
+		var s1 = new $Set([1, 2]);
+		var s2 = [5];
+		s2.size = 3;
+		s2.has = function () {
+			throw new EvalError('Set.prototype.symmetricDifference should not invoke .has on its argument');
+		};
+		s2.keys = function () {
+			return getIterator([2, 3, 4]);
+		};
+
+		var expected = new $Set([1, 3, 4]);
+		var combined = symmetricDifference(s1, s2);
+
+		st.deepEqual(combined, expected);
+		st.ok(combined instanceof $Set, 'returns a Set');
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/set-like-class-mutation', { skip: v.hasDescriptors }, function (st) {
+		var baseSet = new $Set(['a', 'b', 'c', 'd', 'e']);
+
+		var evilSetLike = {
+			size: 4,
+			has: undefined,
+			keys: function () {
+				var index = 0;
+				var values = ['x', 'b', 'c', 'c'];
+				return {
+					next: function () {
+						if (index === 0) {
+							baseSet['delete']('b');
+							baseSet['delete']('c');
+							baseSet.add('b');
+							baseSet.add('d');
+						}
+						return {
+							done: index >= values.length,
+							value: values[index++] // eslint-disable-line no-plusplus
+						};
+					}
+				};
+			}
+		};
+		Object.defineProperty(evilSetLike, 'has', {
+			get: function () {
+				baseSet.add('q');
+				return function () {
+					throw new EvalError('Set.prototype.symmetricDifference should not invoke .has on its argument');
+				};
+			}
+		});
+
+		var combined = symmetricDifference(baseSet, evilSetLike);
+		var expectedCombined = new $Set(['a', 'c', 'd', 'e', 'q', 'x']);
+		st.deepEqual(combined, expectedCombined);
+
+		var expectedNewBase = new $Set(['a', 'd', 'e', 'q', 'b']);
+		st.deepEqual(baseSet, expectedNewBase);
+
+		st.end();
+	});
+
+	t.test('test262: test/built-ins/Set/prototype/symmetricDifference/size-is-a-number', function (st) {
+		var s1 = new $Set([1, 2]);
+		var s2 = {
+			size: undefined,
+			has: function () {},
+			keys: function () {
+				return getIterator([2, 3]);
+			}
+		};
+
+		forEach([undefined, NaN, 'string'].concat(v.bigints), function (size) {
+			s2.size = size;
+			st['throws'](
+				function () { symmetricDifference(s1, s2); },
+				TypeError,
+				'GetSetRecord throws an error when size is ' + debug(size)
+			);
+		});
+
+		var coercionCalls = 0;
+		s2.size = {
+			valueOf: function () {
+				coercionCalls += 1;
+				return NaN;
+			}
+		};
+		st['throws'](
+			function () { symmetricDifference(s1, s2); },
+			TypeError,
+			'GetSetRecord throws an error when size coerces to NaN'
+		);
+		st.equal(coercionCalls, 1, 'GetSetRecord coerces size');
 
 		st.end();
 	});
