@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.1](https://github.com/es-shims/Set.prototype.symmetricDifference/compare/v1.1.0...v1.1.1) - 2024-02-05
+
+### Commits
+
+- [Tests] increase coverage [`3a05e21`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/3a05e21b69843d065fb8aaf52b6932fd66474b50)
+- [Refactor] use `es-errors`, so things that only need those do not need `get-intrinsic` [`0cefa0e`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/0cefa0e65073ab5f520b751bf73ab7cb87240a81)
+- [Deps] update `call-bind`, `define-properties`, `es-abstract`, `es-set`, `get-intrinsic` [`5e4a67f`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/5e4a67f8033256589e69b77bf5699d0eb9d2d6ac)
+- [Dev Deps] update `aud`, `npmignore`, `object-inspect`, `tape` [`b63d3f4`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/b63d3f4514226d24a56d42d3da8f52681f2bd7b1)
+- [Tests] only run the native tests with the native run [`f0e874f`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/f0e874fa04178cbfa68f3e800aa36ce82bbec9c8)
+- [Dev Deps] update `tape` [`36ce9ac`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/36ce9ac489f715d53d2eea139c5ada610b154b69)
+
 ## [v1.1.0](https://github.com/es-shims/Set.prototype.symmetricDifference/compare/v1.0.2...v1.1.0) - 2023-07-18
 
 ### Commits
