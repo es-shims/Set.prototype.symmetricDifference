@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.2](https://github.com/es-shims/Set.prototype.symmetricDifference/compare/v1.1.1...v1.1.2) - 2024-03-16
+
+### Commits
+
+- [meta] remove useless ESM [`55b8277`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/55b82770d9ff6201c6996966bf94a90fc19dbb31)
+- [Refactor] replace `es-abstract` with `es-object-atoms`; update `call-bind`, `is-set` [`32ff4d7`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/32ff4d7fa851fa6de169b5668618a68a39bba700)
+- [Dev Deps] update `tape` [`b2ecdff`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/b2ecdff5f8db955d48f345c97e889dee04bfe1f9)
+
 ## [v1.1.1](https://github.com/es-shims/Set.prototype.symmetricDifference/compare/v1.1.0...v1.1.1) - 2024-02-05
 
 ### Commits
