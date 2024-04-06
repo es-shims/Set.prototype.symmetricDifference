@@ -8,8 +8,7 @@ var $Set = require('es-set/polyfill')();
 
 var GetIteratorFromMethod = require('es-abstract/2024/GetIteratorFromMethod');
 var GetSetRecord = require('./aos/GetSetRecord');
-var IteratorStep = require('es-abstract/2024/IteratorStep');
-var IteratorValue = require('es-abstract/2024/IteratorValue');
+var IteratorStepValue = require('es-abstract/2024/IteratorStepValue');
 // var SetDataHas = require('./aos/SetDataHas');
 
 var isSet = require('is-set');
@@ -37,25 +36,25 @@ module.exports = function symmetricDifference(other) {
 		$setAdd(result, value);
 	});
 
-	var next = true; // step 6
-	while (next) { // step 7
-		next = IteratorStep(keysIter); // step 7.a
-		if (next) { // step 7.b
-			var nextValue = IteratorValue(next); // step 7.b.i
-			if (nextValue === 0) { // step 7.b.ii
-				nextValue = +0;
+	var next; // step 6
+	while (!keysIter['[[Done]]']) { // step 7
+		next = IteratorStepValue(keysIter); // step 7.a
+		if (!keysIter['[[Done]]']) { // step 7.b
+			if (next === 0) { // step 7.b.i
+				next = +0;
 			}
-			// var inResult = SetDataHas(resultSetData, nextValue); // step 7.b.iii
-			var inResult = $setHas(result, nextValue);
-			// if (SetDataHas(O.[[SetData]], nextValue)) { // step 7.b.iv
-			if ($setHas(O, nextValue)) { // step 7.b.iv
+			// Let resultIndex be SetDataIndex(resultSetData, next). // step 7.b.ii
+			var inResult = $setHas(result, next);
+
+			// if (SetDataHas(O.[[SetData]], next)) { // step 7.b.iii
+			if ($setHas(O, next)) { // step 7.b.iii
 				if (inResult) {
-					// remove nextValue from resultSetData. // step 7.b.iv.1
-					$setDelete(result, nextValue);
+					// remove next from resultSetData. // step 7.b.iii.1
+					$setDelete(result, next);
 				}
 			} else if (!inResult) {
-				// append nextValue to resultSetData // step 7.b.iv.2
-				$setAdd(result, nextValue);
+				// append nextValue to resultSetData // step 7.b.iii.2
+				$setAdd(result, next);
 			}
 		}
 	}
