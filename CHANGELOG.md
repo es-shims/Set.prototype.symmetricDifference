@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.3](https://github.com/es-shims/Set.prototype.symmetricDifference/compare/v1.1.2...v1.1.3) - 2024-04-06
+
+### Commits
+
+- [Refactor] update spec from https://github.com/tc39/ecma262/pull/3306 [`281dd20`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/281dd20bc7ece181b772df78a5c907d886ab6826)
+- [Deps] update `es-abstract` [`3fe3aed`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/3fe3aed8a6e39d2d7aeb2649838dccbb382b5fe9)
+- [Dev Deps] update `@es-shims/api` [`ae81971`](https://github.com/es-shims/Set.prototype.symmetricDifference/commit/ae8197129ac26502d134b6225fa5cb595f58ccdf)
+
 ## [v1.1.2](https://github.com/es-shims/Set.prototype.symmetricDifference/compare/v1.1.1...v1.1.2) - 2024-03-16
 
 ### Commits
