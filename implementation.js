@@ -29,7 +29,7 @@ module.exports = function symmetricDifference(other) {
 
 	var otherRec = GetSetRecord(other); // step 3
 
-	var keysIter = GetIteratorFromMethod(otherRec['[[Set]]'], otherRec['[[Keys]]']); // step 4
+	var keysIter = GetIteratorFromMethod(otherRec['[[SetObject]]'], otherRec['[[Keys]]']); // step 4
 
 	var result = new $Set();
 	$setForEach(O, function (value) {
